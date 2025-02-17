@@ -24,6 +24,7 @@ const connectDB = async () => {
 }
 connectDB()
 
+app.use(express.static("public"));
 app.use(express.json())
 
 app.get('/', (req, res) => {
