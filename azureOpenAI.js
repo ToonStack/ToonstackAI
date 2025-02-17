@@ -13,9 +13,14 @@ export async function queryAzureOpenAI(userQuery, context) {
       {
         model: 'gpt-4o', // Adjust based on your Azure deployment
         messages: [
-          { role: 'system', content: 'You are an AI assistant helping users with platform content.' },
-          { role: 'user', content: userQuery },
-          { role: 'assistant', content: `Here is relevant information:\n${context}` },
+          { 
+            role: 'system', 
+            content: 'You are an AI assistant. Use the provided database content first before generating new information.' 
+          },
+          { 
+            role: 'user', 
+            content: `User Query: ${userQuery}\n\nRelevant Database Content:\n${context}` 
+          }
         ],
         temperature: 0.7,
       },
