@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import colors from "colors";
 import { queryAzureOpenAI } from './azureOpenAI.js';
 import contentRoutes from './routes/contentRoutes.js';
+import Content from "./models/Content.js";
 const app = express()
 
 
@@ -22,6 +23,8 @@ const connectDB = async () => {
   }
 }
 connectDB()
+
+app.use(express.json())
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
