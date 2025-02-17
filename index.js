@@ -5,6 +5,8 @@ import colors from "colors";
 import { queryAzureOpenAI } from './azureOpenAI.js';
 import contentRoutes from './routes/contentRoutes.js';
 import Content from "./models/Content.js";
+import cors from "cors"
+
 const app = express()
 
 
@@ -26,6 +28,7 @@ connectDB()
 
 app.use(express.static("public"));
 app.use(express.json())
+app.use(cors());
 
 // Content Routes
 app.use('/api/content', contentRoutes);

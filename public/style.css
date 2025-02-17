@@ -55,3 +55,21 @@
     background-color: #c9ac0c;
   }
   
+  #typing-indicator {
+    font-style: italic;
+    color: #777;
+  }
+  
+  #typing-indicator::after {
+    content: "...";
+    animation: typing 1.5s steps(5, end) infinite;
+  }
+  
+  @keyframes typing {
+    0% { content: "..."; }
+    25% { content: ".  "; }
+    50% { content: ".. "; }
+    75% { content: "..."; }
+    100% { content: "..."; }
+  }
+  
