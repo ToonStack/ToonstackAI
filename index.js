@@ -42,24 +42,26 @@ app.post('/api/chat', async (req, res) => {
       return res.status(400).json({ error: 'Query is required' });
     }
 
-    // 🟢 Search MongoDB for relevant content
+    //  Search MongoDB for relevant content
     const searchResults = await Content.find({
-      $text: { $search: query },
+      $or: [
+        { title: new RegExp(query, 'i') },  // Matches title
+        { body: new RegExp(query, 'i') },   // Matches body
+        { tags: query.toLowerCase() }       // Matches tags exactly
+      ]
     }).limit(5);
 
-    if (searchResults.length === 0) {
-      return res.status(404).json({ message: 'No relevant content found' });
+    let context = 'No relevant database content found.';
+    if (searchResults.length > 0) {
+      context = searchResults.map((doc) => `Title: ${doc.title}\nContent: ${doc.body}`).join('\n\n');
     }
 
-    // 🟢 Prepare search results for AI
-    const context = searchResults.map((doc) => doc.body).join('\n\n');
-
-    // 🟢 Call Azure OpenAI
+    //  Call Azure OpenAI
     const aiResponse = await queryAzureOpenAI(query, context);
 
     res.json({ response: aiResponse });
   } catch (error) {
-    console.error(' Error in /api/chat:', error);
+    console.error('Error in /api/chat:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
