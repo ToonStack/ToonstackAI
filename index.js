@@ -27,10 +27,6 @@ connectDB()
 app.use(express.static("public"));
 app.use(express.json())
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-
 // Content Routes
 app.use('/api/content', contentRoutes);
 
