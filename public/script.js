@@ -7,16 +7,16 @@ document.getElementById("send-button").addEventListener("click", async () => {
     displayMessage("You: " + message);
   
     // Send message to the backend
-    const response = await fetch("https://shiny-rotary-phone-j7vgppw77xcw5-3000.app.github.dev/api/chat/", {
+    const response = await fetch("https://shiny-rotary-phone-j7vgppw77xcw5-3000.app.github.dev/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ query: message }),  // Send 'query' instead of 'message'
     });
   
     const data = await response.json();
-    const reply = data.reply;
+    const reply = data.response;
   
     // Display bot response
     displayMessage("Toonstack: " + reply);
@@ -29,5 +29,4 @@ document.getElementById("send-button").addEventListener("click", async () => {
     const chatBox = document.getElementById("chat-box");
     chatBox.innerHTML += `<p>${message}</p>`;
     chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the latest message
-  }
-  
+  }  
