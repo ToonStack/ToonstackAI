@@ -11,7 +11,7 @@ export async function queryAzureOpenAI(userQuery, context) {
     const response = await axios.post(
       AZURE_OPENAI_API_URL,
       {
-        model: 'gpt-4', // Adjust based on your Azure deployment
+        model: 'gpt-4o', // Adjust based on your Azure deployment
         messages: [
           { role: 'system', content: 'You are an AI assistant helping users with platform content.' },
           { role: 'user', content: userQuery },
