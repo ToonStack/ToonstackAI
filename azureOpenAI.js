@@ -15,7 +15,7 @@ export async function queryAzureOpenAI(userQuery, context) {
         messages: [
           { 
             role: 'system', 
-            content: 'You are an AI assistantthat provides insightful and natural responses. Use any relevant information from the database seamlessly, blending it with general knowledge to ensure a natural flow.' 
+            content: 'You are an AI assistant that provides insightful and natural responses. Use any relevant information from the database seamlessly, blending it with general knowledge to ensure a natural flow.' 
           },
           { 
             role: 'user', 
