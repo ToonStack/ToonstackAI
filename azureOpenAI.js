@@ -23,6 +23,7 @@ export async function queryAzureOpenAI(userQuery, context) {
           }
         ],
         temperature: 0.7,
+        max_tokens: 100,
       },
       {
         headers: {
