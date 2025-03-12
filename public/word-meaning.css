@@ -1,16 +1,57 @@
+/* General Page Styling */
 body {
     font-family: Arial, sans-serif;
     padding: 20px;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
-.popup {
-    display: none; /* Initially hidden */
-    position: fixed;
+/* Story Card Container */
+.story-container {
     background: white;
-    border: 1px solid black;
-    padding: 10px;
+    padding: 20px;
+    border-radius: 10px;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000; /* Ensure it appears above other content */
-    max-width: 300px; /* Avoid excessive width */
-    word-wrap: break-word;
+    max-width: 600px;
+    text-align: center;
+}
+
+/* Styling for the lyrics */
+#story {
+    font-size: 24pt; /* Larger font for easy clicking */
+    line-height: 1.6; /* Better readability */
+    word-spacing: 10px; /* Spacing between words */
+    text-align: justify;
+}
+
+/* Styling each word to look clickable */
+.word {
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+}
+
+.word:hover {
+    color: #007bff; /* Highlight effect */
+}
+
+/* Styled popup */
+.popup {
+    display: none;
+    position: absolute;
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    width: 250px;
+    text-align: center;
+}
+
+/* Popup content */
+.popup-content {
+    font-size: 18px;
+    color: #333;
 }
