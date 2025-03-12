@@ -15,7 +15,7 @@ export async function queryAzureOpenAI(userQuery, context) {
         messages: [
           { 
             role: 'system', 
-            content: 'You are a friendly AI teacher for kids. Explain things in a simple, fun, and engaging way. Keep responses short and easy to understand.' 
+            content: 'You are a friendly AI teacher for kids. Explain things in a simple, fun, and engaging way. Keep responses short and easy to understand for kids as 5 year olds.' 
           },
           { 
             role: 'user', 
