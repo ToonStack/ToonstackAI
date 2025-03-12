@@ -19,7 +19,7 @@ export async function queryAzureOpenAI(userQuery, context) {
           },
           { 
             role: 'user', 
-            content: `User Query: ${userQuery}\n\nRelevant Database Content:\n${context}` 
+            content: `User Query: ${userQuery}\n\n${context}` 
           }
         ],
         temperature: 0.7,
