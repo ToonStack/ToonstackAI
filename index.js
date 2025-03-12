@@ -36,6 +36,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json())
 app.use(cors());
 
+app.get("/word-meaning", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "word-meaning.html"));
+});
+
 // Content Routes
 app.use('/api/content', contentRoutes);
 
