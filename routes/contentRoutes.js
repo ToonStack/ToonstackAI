@@ -84,4 +84,17 @@ router.get('/search', async (req, res) => {
   }
 });
 
+router.get("/content/:id", async (req, res) => {
+  try {
+      const content = await Content.findById(req.params.id);
+      if (!content) {
+          return res.status(404).json({ message: "Content not found" });
+      }
+      res.json(content);
+  } catch (error) {
+      res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+
 export default router;
