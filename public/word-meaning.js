@@ -18,43 +18,56 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let timeout;
 
-    // Fetch word meaning
-    const fetchWordMeaning = async (word, x, y) => {
-        try {
-            const response = await fetch("https://shiny-rotary-phone-j7vgppw77xcw5-3000.app.github.dev/api/content/word-meaning", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ word, storyId })
-            });
+// Fetch word meaning
+const fetchWordMeaning = async (word, x, y) => {
+    try {
+        // Show popup and spinner while loading
+        popup.style.display = "block";
+        wordSpan.innerText = word;
+        meaningP.innerText = ""; // Clear previous meaning
+        const spinner = document.getElementById("spinner");
+        spinner.classList.remove("hidden");
 
-            const data = await response.json();
-            if (data.error) {
-                console.error("Error:", data.error);
-                return;
-            }
+        // Fetch meaning
+        const response = await fetch("https://shiny-rotary-phone-j7vgppw77xcw5-3000.app.github.dev/api/content/word-meaning", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ word, storyId })
+        });
 
-            // Set popup content
-            wordSpan.innerText = word;
-            meaningP.innerText = data.meaning;
-            popup.style.display = "block";
+        const data = await response.json();
 
-            // Adjust position to stay in viewport
-            let left = x;
-            let top = y;
+        // Hide spinner after fetching
+        spinner.classList.add("hidden");
 
-            if (left + popup.offsetWidth > window.innerWidth) {
-                left = window.innerWidth - popup.offsetWidth - 10; // Adjust if overflowing right
-            }
-            if (top + popup.offsetHeight > window.innerHeight) {
-                top = window.innerHeight - popup.offsetHeight - 10; // Adjust if overflowing bottom
-            }
-
-            popup.style.left = `${left}px`;
-            popup.style.top = `${top}px`;
-        } catch (error) {
-            console.error("Error fetching word meaning:", error);
+        if (data.error) {
+            console.error("Error:", data.error);
+            meaningP.innerText = "Meaning not found!";
+            return;
         }
-    };
+
+        // Display meaning
+        meaningP.innerText = data.meaning;
+
+        // Adjust position to stay in viewport
+        let left = x;
+        let top = y;
+
+        if (left + popup.offsetWidth > window.innerWidth) {
+            left = window.innerWidth - popup.offsetWidth - 10; // Adjust if overflowing right
+        }
+        if (top + popup.offsetHeight > window.innerHeight) {
+            top = window.innerHeight - popup.offsetHeight - 10; // Adjust if overflowing bottom
+        }
+
+        popup.style.left = `${left}px`;
+        popup.style.top = `${top}px`;
+    } catch (error) {
+        console.error("Error fetching word meaning:", error);
+        meaningP.innerText = "Failed to load meaning.";
+        document.getElementById("spinner").classList.add("hidden"); // Ensure spinner hides on failure
+    }
+};
 
     // Start timeout for long press
     const startTimeout = (event, word) => {
