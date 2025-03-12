@@ -15,11 +15,14 @@ export async function queryAzureOpenAI(userQuery, context) {
         messages: [
           { 
             role: 'system', 
-            content: 'You are a friendly AI teacher for kids. Explain things in a simple, fun, and engaging way. Keep responses short and easy to understand for kids as 5 year olds.' 
+            content: 'You are a friendly AI teacher for kids. Explain things in a simple, fun,\
+            and engaging way.Look up the context of questions asked, based on content from the\
+            database and also add flavour to it. Keep responses\
+             short and easy to understand for kids as 5 year olds.' 
           },
           { 
             role: 'user', 
-            content: `User Query: ${userQuery}\n\n${context}` 
+            content: `What does "${userQuery}" mean in this story? Context:\n\n${context}` 
           }
         ],
         temperature: 0.7,
