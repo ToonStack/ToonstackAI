@@ -84,7 +84,7 @@ router.get('/search', async (req, res) => {
   }
 });
 
-router.get("/content/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
       const content = await Content.findById(req.params.id);
       if (!content) {
