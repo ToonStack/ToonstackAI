@@ -7,7 +7,19 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    overflow-y: auto; /* Allow scrolling */
+    touch-action: auto; /* Enable default touch behavior */
 }
+
+/* Prevent default long-press menu on mobile */
+.word {
+    user-select: none;  /* Prevent text selection */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    touch-action: none;  /* Disable default touch behaviors */
+}
+
 
 /* Story Card Container */
 .story-container {
@@ -38,6 +50,7 @@ body {
 }
 
 /* Styled popup */
+/* Ensure popup starts hidden */
 .popup {
     display: none;
     position: absolute;
@@ -48,10 +61,20 @@ body {
     z-index: 1000;
     width: 250px;
     text-align: center;
+    max-width: 90%; /* Prevent it from being too wide */
 }
+
 
 /* Popup content */
 .popup-content {
     font-size: 18px;
     color: #333;
+}
+
+/* Prevent long-press blocking scrolling */
+.word {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }

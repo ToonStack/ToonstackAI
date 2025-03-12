@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const storyId = "67d19d7af9dea91949d338b2";
 
-    // Fetch and display the story from API
+    // Fetch and display the story
     try {
         const response = await fetch("https://shiny-rotary-phone-j7vgppw77xcw5-3000.app.github.dev/api/content/67d19d7af9dea91949d338b2");
         const data = await response.json();
@@ -18,50 +18,78 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let timeout;
 
-    // Handle word click-and-hold for 2 seconds
-    storyElement.addEventListener("mousedown", event => {
+    // Fetch word meaning
+    const fetchWordMeaning = async (word, x, y) => {
+        try {
+            const response = await fetch("https://shiny-rotary-phone-j7vgppw77xcw5-3000.app.github.dev/api/content/word-meaning", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ word, storyId })
+            });
+
+            const data = await response.json();
+            if (data.error) {
+                console.error("Error:", data.error);
+                return;
+            }
+
+            // Set popup content
+            wordSpan.innerText = word;
+            meaningP.innerText = data.meaning;
+            popup.style.display = "block";
+
+            // Adjust position to stay in viewport
+            let left = x;
+            let top = y;
+
+            if (left + popup.offsetWidth > window.innerWidth) {
+                left = window.innerWidth - popup.offsetWidth - 10; // Adjust if overflowing right
+            }
+            if (top + popup.offsetHeight > window.innerHeight) {
+                top = window.innerHeight - popup.offsetHeight - 10; // Adjust if overflowing bottom
+            }
+
+            popup.style.left = `${left}px`;
+            popup.style.top = `${top}px`;
+        } catch (error) {
+            console.error("Error fetching word meaning:", error);
+        }
+    };
+
+    // Start timeout for long press
+    const startTimeout = (event, word) => {
+        const x = event.pageX || event.touches[0].pageX;
+        const y = event.pageY || event.touches[0].pageY;
+
+        timeout = setTimeout(() => fetchWordMeaning(word, x, y), 1000);
+    };
+
+    // Handle touch and click events without blocking scrolling
+    const handleEvent = (event) => {
         if (event.target.classList.contains("word")) {
             const word = event.target.innerText;
+            startTimeout(event, word);
+        }
+    };
 
-            timeout = setTimeout(async () => {
-                try {
-                    const response = await fetch("https://shiny-rotary-phone-j7vgppw77xcw5-3000.app.github.dev/api/content/word-meaning", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ word, storyId })
-                    });
-
-                    const data = await response.json();
-                    if (data.error) {
-                        console.error("Error:", data.error);
-                        return;
-                    }
-
-                    console.log(data.meaning);
-
-                    // Display meaning in popup
-                    wordSpan.innerText = word;
-                    meaningP.innerText = data.meaning;
-
-                    popup.style.left = `${event.clientX}px`;
-                    popup.style.top = `${event.clientY + window.scrollY}px`;
-                    popup.style.display = "block";  // FIX: Make popup visible
-                } catch (error) {
-                    console.error("Error fetching word meaning:", error);
-                }
-            }, 2000); // 2 seconds hold
+    // Only prevent default on long-press, not short taps
+    storyElement.addEventListener("mousedown", handleEvent);
+    storyElement.addEventListener("touchstart", (event) => {
+        if (event.target.classList.contains("word")) {
+            startTimeout(event, event.target.innerText);
         }
     });
 
-    // Cancel timeout on mouseup
-    storyElement.addEventListener("mouseup", () => {
-        clearTimeout(timeout);
-    });
+    // Cancel timeout if user releases before timeout
+    const cancelTimeout = () => clearTimeout(timeout);
+    storyElement.addEventListener("mouseup", cancelTimeout);
+    storyElement.addEventListener("touchend", cancelTimeout);
+    storyElement.addEventListener("touchmove", cancelTimeout); // Allow scrolling
 
-    // Hide popup on click outside
-    document.addEventListener("click", event => {
+    // Hide popup when clicking outside
+    document.addEventListener("click", (event) => {
         if (!event.target.classList.contains("word")) {
-            popup.style.display = "none";  // FIX: Hide the popup properly
+            popup.style.display = "none";
         }
     });
 });
