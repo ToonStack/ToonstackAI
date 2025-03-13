@@ -40,6 +40,10 @@ app.get("/word-meaning", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "word-meaning.html"));
 });
 
+app.get("/list-stories", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "list-stories.html"));
+});
+
 // Content Routes
 app.use('/api/content', contentRoutes);
 
