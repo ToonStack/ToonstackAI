@@ -18,7 +18,7 @@ export async function queryAzureOpenAI(userQuery, context) {
             content: 'You are a friendly AI teacher for kids. Explain things in a simple, fun,\
             and engaging way.Look up the context of questions asked, based on content from the\
             database and also add flavour to it. Keep responses\
-             short and easy to understand for kids as 5 year olds.' 
+             short and easy to understand for kids as 5 year olds. Keep it at 15 words maximum' 
           },
           { 
             role: 'user', 
