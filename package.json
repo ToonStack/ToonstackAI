@@ -8,6 +8,7 @@
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "elevenlabs": "^1.56.1",
     "express": "^4.21.2",
     "mongodb": "^6.13.0",
     "mongoose": "^8.10.1"
