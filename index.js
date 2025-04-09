@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import mongoose from "mongoose";
 import colors from "colors";
 import { queryAzureOpenAI } from './azureOpenAI.js';
+import { convertTextToSpeech } from './elevenLabs.js';
 import contentRoutes from './routes/contentRoutes.js';
 import Content from "./models/Content.js";
 import cors from "cors"
@@ -76,6 +77,33 @@ app.post('/api/chat', async (req, res) => {
     res.json({ response: aiResponse });
   } catch (error) {
     console.error('Error in /api/chat:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Audio Endpoint (returns the audio stream)
+app.post('/api/audio', async (req, res) => {
+  try {
+    const { text } = req.body;
+
+    if (!text) {
+      return res.status(400).json({ error: 'Text is required for audio conversion' });
+    }
+
+    // Convert the text to speech using ElevenLabs
+    const audioStream = await convertTextToSpeech(text);
+
+    // Set headers for audio streaming response
+    res.set({
+      'Content-Type': 'audio/mpeg',
+      'Content-Disposition': 'inline; filename=tts.mp3',
+    });
+
+    // Pipe the audio stream back to the client
+    audioStream.pipe(res);
+
+  } catch (error) {
+    console.error('Error in /api/audio:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
