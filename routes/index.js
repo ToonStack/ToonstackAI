@@ -8,5 +8,4 @@ const router = express.Router();
 router.use('/content', contentRoutes);
 router.use('/ai', wordMeaningRoutes);
 
-
 export default router;
