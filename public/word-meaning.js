@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       popupVisible = true;
 
-      const response = await fetch("/api/content/word-meaning", {
+      const response = await fetch("/api/ai/word-meaning", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ word, storyId })

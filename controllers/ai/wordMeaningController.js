@@ -1,5 +1,5 @@
-import Content from '../models/Content.js';
-import { queryAzureOpenAI } from '../config/azureOpenAI.js';
+import Content from '../../models/Content.js';
+import { queryAzureOpenAI } from '../../config/azureOpenAI.js';
 
 export const getWordMeaning = async (req, res) => {
   try {
