@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let timeout;
   let popupVisible = false;
+  const audioCache = {};
 
   // Fetch word meaning and display popup
   const fetchWordMeaning = async (word, target) => {
@@ -37,7 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       spinner.classList.remove("hidden");
       speakButton.classList.add("hidden");
 
-      popupVisible = true; // <== Mark visible to suppress premature hiding
+      popupVisible = true;
 
       const response = await fetch("/api/content/word-meaning", {
         method: "POST",
@@ -57,8 +58,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       meaningP.innerText = data.meaning;
       speakButton.classList.remove("hidden");
 
-      // Set up speak button click
-      speakButton.onclick = () => playAudio(data.meaning);
+      // Auto-play the audio
+      playAudio(data.meaning);
+
+      // Set up speak button to replay
+      speakButton.onclick = () => {
+        if (audioCache[data.meaning]) {
+          playCachedAudio(audioCache[data.meaning]);
+        } else {
+          playAudio(data.meaning); // fallback
+        }
+      };
     } catch (error) {
       console.error("Error fetching word meaning:", error);
       meaningP.innerText = "Failed to load meaning.";
@@ -91,6 +101,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     popup.style.top = `${top}px`;
   };
 
+  // Fetch audio and play
   const playAudio = async (text) => {
     try {
       const response = await fetch('/api/audio', {
@@ -105,20 +116,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const audioBlob = await response.blob();
       const audioUrl = URL.createObjectURL(audioBlob);
+      audioCache[text] = audioUrl;
 
-      let audio = document.getElementById("popup-audio");
-      if (!audio) {
-        audio = document.createElement("audio");
-        audio.id = "popup-audio";
-        audio.hidden = true;
-        document.body.appendChild(audio);
-      }
-
-      audio.src = audioUrl;
-      audio.play();
+      playCachedAudio(audioUrl);
     } catch (error) {
       console.error('Audio playback failed:', error);
     }
+  };
+
+  // Play from cached audio
+  const playCachedAudio = (url) => {
+    let audio = document.getElementById("popup-audio");
+    if (!audio) {
+      audio = document.createElement("audio");
+      audio.id = "popup-audio";
+      audio.hidden = true;
+      document.body.appendChild(audio);
+    }
+    audio.src = url;
+    audio.play();
   };
 
   // Handle long-press on words
@@ -133,7 +149,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const cancelTimeout = () => {
     clearTimeout(timeout);
-    // Do NOT hide popup here — leave that to outside click handler
   };
 
   storyElement.addEventListener("mousedown", startTimeout);
