@@ -1,11 +1,17 @@
-import express from 'express';
-import { getWordMeaning } from '../controllers/ai/wordMeaningController.js';
+import express from "express";
 import { chat } from "../controllers/ai/chatController.js";
-
+import { getWordMeaning } from "../controllers/ai/wordMeaningController.js";
+import { textToSpeech } from "../controllers/ai/ttsController.js";
 
 const router = express.Router();
 
-router.post('/word-meaning', getWordMeaning);
+// Word Meaning Route
+router.get("/wordmeaning", getWordMeaning);
 
+// Chat Route
+router.post("/chat", chat);
+
+// Text-to-Speech Route
+router.post("/audio", textToSpeech);
 
 export default router;
