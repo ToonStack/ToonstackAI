@@ -1,7 +1,6 @@
 import express from "express";
 import dotenv from 'dotenv'
-import mongoose from "mongoose";
-import colors from "colors";
+import { connectDB } from "./config/db.js"
 import { queryAzureOpenAI } from './azureOpenAI.js';
 import { convertTextToSpeech } from './elevenLabs.js';
 import contentRoutes from './routes/contentRoutes.js';
@@ -19,17 +18,6 @@ const app = express()
 dotenv.config()
 const PORT = process.env.PORT || 3000
 
-const connectDB = async () => {
-  try {
-      const conn = await mongoose.connect(process.env.MONGO_URI, {
-          dbName: 'ToonstackAI'
-      });
-      console.log(`MongoDB connected: ${conn.connection.host}`.green.underline);
-  } catch (error) {
-      console.error('MongoDB connection error!', error);
-      process.exit(1);
-  }
-}
 connectDB()
 
 app.use(express.urlencoded({ extended: true }));
