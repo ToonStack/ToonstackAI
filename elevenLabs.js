@@ -3,11 +3,13 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const voiceId = process.env.VOICE_ID;
+
 const client = new ElevenLabsClient({ apiKey: process.env.ELEVENLABS_API_KEY });
 
 export async function convertTextToSpeech(text) {
   try {
-    const audioStream = await client.textToSpeech.convertAsStream('JBFqnCBsd6RMkjVDRZzb', {
+    const audioStream = await client.textToSpeech.convertAsStream(voiceId, {
       text: text,
       model_id: 'eleven_multilingual_v2',
     });

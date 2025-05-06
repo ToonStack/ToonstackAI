@@ -32,6 +32,8 @@ const connectDB = async () => {
 }
 connectDB()
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("audio"));
 app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json())
@@ -81,7 +83,6 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// Audio Endpoint (returns the audio stream)
 app.post('/api/audio', async (req, res) => {
   try {
     const { text } = req.body;
@@ -90,18 +91,14 @@ app.post('/api/audio', async (req, res) => {
       return res.status(400).json({ error: 'Text is required for audio conversion' });
     }
 
-    // Convert the text to speech using ElevenLabs
     const audioStream = await convertTextToSpeech(text);
 
-    // Set headers for audio streaming response
     res.set({
       'Content-Type': 'audio/mpeg',
       'Content-Disposition': 'inline; filename=tts.mp3',
     });
 
-    // Pipe the audio stream back to the client
     audioStream.pipe(res);
-
   } catch (error) {
     console.error('Error in /api/audio:', error);
     res.status(500).json({ error: 'Internal Server Error' });
