@@ -11,7 +11,7 @@ document.getElementById("send-button").addEventListener("click", async () => {
   
     try {
       // Send message to the backend
-      const response = await fetch("https://shiny-rotary-phone-j7vgppw77xcw5-3000.app.github.dev/api/chat", {
+      const response = await fetch("https://shiny-rotary-phone-j7vgppw77xcw5-3000.app.github.dev/api/ai/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
