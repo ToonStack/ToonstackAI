@@ -8,6 +8,7 @@ import Content from "./models/Content.js";
 import cors from "cors"
 import path from "path";
 import { fileURLToPath } from "url";
+import routes from './routes/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,8 +36,8 @@ app.get("/list-stories", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "list-stories.html"));
 });
 
-// Content Routes
-app.use('/api/content', contentRoutes);
+// Use all routes via central index
+app.use('/api', routes);
 
 // Chatbot Query Endpoint
 app.post('/api/chat', async (req, res) => {
