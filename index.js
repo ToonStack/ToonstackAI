@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import mongoose from "mongoose";
 import colors from "colors";
 import { queryAzureOpenAI } from './azureOpenAI.js';
+import { convertTextToSpeech } from './elevenLabs.js';
 import contentRoutes from './routes/contentRoutes.js';
 import Content from "./models/Content.js";
 import cors from "cors"
@@ -31,6 +32,8 @@ const connectDB = async () => {
 }
 connectDB()
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("audio"));
 app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json())
@@ -76,6 +79,28 @@ app.post('/api/chat', async (req, res) => {
     res.json({ response: aiResponse });
   } catch (error) {
     console.error('Error in /api/chat:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.post('/api/audio', async (req, res) => {
+  try {
+    const { text } = req.body;
+
+    if (!text) {
+      return res.status(400).json({ error: 'Text is required for audio conversion' });
+    }
+
+    const audioStream = await convertTextToSpeech(text);
+
+    res.set({
+      'Content-Type': 'audio/mpeg',
+      'Content-Disposition': 'inline; filename=tts.mp3',
+    });
+
+    audioStream.pipe(res);
+  } catch (error) {
+    console.error('Error in /api/audio:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
