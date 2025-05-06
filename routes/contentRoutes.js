@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv'
 import Content from '../models/Content.js';
-import { queryAzureOpenAI } from '../azureOpenAI.js';
+import { queryAzureOpenAI } from '../config/azureOpenAI.js';
 
 dotenv.config()
 

@@ -1,8 +1,8 @@
 import express from "express";
 import dotenv from 'dotenv'
 import { connectDB } from "./config/db.js"
-import { queryAzureOpenAI } from './azureOpenAI.js';
-import { convertTextToSpeech } from './elevenLabs.js';
+import { queryAzureOpenAI } from './config/azureOpenAI.js';
+import { convertTextToSpeech } from './config/elevenLabs.js';
 import contentRoutes from './routes/contentRoutes.js';
 import Content from "./models/Content.js";
 import cors from "cors"
