@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Fetch audio and play
   const playAudio = async (text) => {
     try {
-      const response = await fetch('/api/audio', {
+      const response = await fetch('/api/ai/audio', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

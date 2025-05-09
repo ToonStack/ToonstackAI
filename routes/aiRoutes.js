@@ -6,7 +6,7 @@ import { textToSpeech } from "../controllers/ai/ttsController.js";
 const router = express.Router();
 
 // Word Meaning Route
-router.get("/word-meaning", getWordMeaning);
+router.post("/word-meaning", getWordMeaning);
 
 // Chat Route
 router.post("/chat", chat);
