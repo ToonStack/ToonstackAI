@@ -1,27 +1,24 @@
-import { BlobServiceClient } from '@azure/storage-blob';
+import { BlobServiceClient, StorageSharedKeyCredential } from '@azure/storage-blob';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-let containerClient;
+// Azure Blob setup
+const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_BLOB_CONNECTION_STRING);
+const containerClient = blobServiceClient.getContainerClient(process.env.AZURE_BLOB_CONTAINER_NAME);
 
-try {
-  const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_BLOB_CONNECTION_STRING);
-  const containerName = process.env.AZURE_BLOB_CONTAINER_NAME;
+// Generate SAS URL
+const generateSASUrl = (blobClient) => {
+  const expiresOn = new Date();
+  expiresOn.setMinutes(expiresOn.getMinutes() + 60); // SAS URL expires in 1 hour
 
-  containerClient = blobServiceClient.getContainerClient(containerName);
+  const sasToken = blobClient.generateSasUrl({
+    permissions: 'r', // Only read access
+    expiresOn: expiresOn,
+  });
 
-  // Test the connection by checking if the container exists
-  const exists = await containerClient.exists();
-
-  if (exists) {
-    console.log(`✅ Connected to Azure Blob Container: ${containerName}`);
-  } else {
-    console.warn(`⚠️ Container '${containerName}' does not exist in Azure Blob Storage.`);
-  }
-} catch (err) {
-  console.error("❌ Failed to connect to Azure Blob Storage:", err.message);
-}
+  return sasToken;
+};
 
 export const uploadAudioToAzureBlob = async (audioBuffer, filename) => {
   if (!containerClient) {
@@ -32,7 +29,12 @@ export const uploadAudioToAzureBlob = async (audioBuffer, filename) => {
     const blobClient = containerClient.getBlockBlobClient(filename);
     const uploadBlobResponse = await blobClient.upload(audioBuffer, audioBuffer.length);
     console.log(`Blob uploaded with response code ${uploadBlobResponse._response.status}`);
-    return blobClient.url;
+
+    // Generate SAS URL
+    const sasUrl = generateSASUrl(blobClient);
+    console.log(`SAS URL generated: ${sasUrl}`);
+
+    return sasUrl;
   } catch (uploadError) {
     console.error("❌ Upload to Azure Blob failed:", uploadError.message);
     throw uploadError;
