@@ -32,6 +32,11 @@ app.get("/list-stories", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "list-stories.html"));
 });
 
+import debugUploadRoute from './routes/debugUploadRoute.js';
+app.use('/debug', debugUploadRoute);
+
+
+
 // Use all routes via central index
 app.use('/api', routes);
 

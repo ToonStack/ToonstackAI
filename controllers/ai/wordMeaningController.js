@@ -1,5 +1,6 @@
 import Content from '../../models/Content.js';
 import { queryAzureOpenAI } from '../../config/azureOpenAI.js';
+import redisClient from '../../config/redisClient.js';
 
 export const getWordMeaning = async (req, res) => {
   try {
@@ -7,6 +8,13 @@ export const getWordMeaning = async (req, res) => {
 
     if (!word || !storyId) {
       return res.status(400).json({ error: 'Word and Story ID are required' });
+    }
+
+    const cacheKey = `meaning:${storyId}:${word.toLowerCase()}`;
+    const cached = await redisClient.get(cacheKey);
+
+    if (cached) {
+      return res.json({ word, meaning: JSON.parse(cached) });
     }
 
     const story = await Content.findById(storyId);
@@ -26,6 +34,9 @@ export const getWordMeaning = async (req, res) => {
     const context = wordsArray.slice(start, end).join(' ');
 
     const explanation = await queryAzureOpenAI(word, context);
+
+    // Cache for 24 hours
+    await redisClient.setEx(cacheKey, 86400, JSON.stringify(explanation));
 
     res.json({ word, meaning: explanation });
   } catch (error) {
