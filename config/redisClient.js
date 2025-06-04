@@ -4,14 +4,20 @@ import dotenv from 'dotenv';
 // Load environment variables from .env file
 dotenv.config();
 
-// Create the Redis client with connection details
+// Validate required environment variables
+const redisHost = process.env.AZURE_MANAGED_REDIS_HOST_NAME;
+const redisAccessKey = process.env.AZURE_MANAGED_REDIS_ACCESS_KEY
+
+if (!redisHost) throw new Error("REDIS_HOST is not defined in .env");
+if (!redisAccessKey) throw new Error("REDIS_ACCESS_KEY is not defined in .env");
+
+// Build the Redis connection URL with TLS
+const redisUrl = `rediss://${redisHost}:6380`;
+
+// Create Redis client using connection string and password
 const redisClient = createClient({
-  socket: {
-    host: process.env.REDIS_HOST || '127.0.0.1', // Default to localhost if not set
-    port: process.env.REDIS_PORT || 6379,       // Default Redis port
-    tls: process.env.REDIS_TLS === 'true',      // Use TLS if set in environment
-  },
-  password: process.env.REDIS_ACCESS_KEY,       // Redis access key (from environment)
+  url: redisUrl,
+  password: redisAccessKey,
 });
 
 // Handle errors with Redis client
@@ -19,31 +25,33 @@ redisClient.on('error', (err) => {
   console.error('Redis Client Error:', err);
 });
 
-// Handle the 'close' event (if the connection is lost)
+// Optional: Reconnect on end
 redisClient.on('end', () => {
-  console.log('Redis connection lost, attempting to reconnect...');
+  console.warn('Redis connection ended. Attempting reconnect...');
   setTimeout(() => {
-    redisClient.connect().catch(console.error);  // attempt to reconnect
-  }, 5000);  // Retry after 5 seconds
+    redisClient.connect().catch(console.error);
+  }, 5000);
 });
 
 // Connect to Redis
-redisClient.connect().then(() => {
-  console.log('Connected to Redis');
-  // Test Redis connection
-  redisClient.ping().then((pingResponse) => {
-    console.log('Redis Ping Response:', pingResponse);  // Should print 'PONG'
-  }).catch((err) => {
-    console.error('Ping Error:', err);
+redisClient.connect()
+  .then(() => {
+    console.log('✅ Connected to Redis');
+    return redisClient.ping();
+  })
+  .then((pingResponse) => {
+    console.log('Redis Ping Response:', pingResponse);  // Should be 'PONG'
+  })
+  .catch((err) => {
+    console.error('Redis Connection Error:', err);
   });
-});
 
 // Gracefully handle process exit
 process.on('SIGINT', async () => {
   await redisClient.quit();
   console.log('Redis connection closed');
-  process.exit();  // Exit the process after cleanup
+  process.exit();
 });
 
-// Export the client for use in other modules
+// Export the client for use elsewhere
 export default redisClient;
