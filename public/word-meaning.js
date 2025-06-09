@@ -25,10 +25,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   let timeout;
-  let popupVisible = false;
-  const audioCache = {};
+  const audioCache = {}; // Cache audio URLs
 
-  // Fetch word meaning and display popup
   const fetchWordMeaning = async (word, target) => {
     try {
       positionPopup(target);
@@ -38,9 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       spinner.classList.remove("hidden");
       speakButton.classList.add("hidden");
 
-      popupVisible = true;
-
-      const response = await fetch("/api/content/word-meaning", {
+      const response = await fetch("/api/ai/word-meaning", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ word, storyId })
@@ -58,15 +54,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       meaningP.innerText = data.meaning;
       speakButton.classList.remove("hidden");
 
-      // Auto-play the audio
+      // Auto-play audio
       playAudio(data.meaning);
 
-      // Set up speak button to replay
+      // Replay on click
       speakButton.onclick = () => {
         if (audioCache[data.meaning]) {
           playCachedAudio(audioCache[data.meaning]);
         } else {
-          playAudio(data.meaning); // fallback
+          playAudio(data.meaning);
         }
       };
     } catch (error) {
@@ -76,7 +72,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   };
 
-  // Position popup near the target word
   const positionPopup = (target) => {
     const rect = target.getBoundingClientRect();
     const popupHeight = popup.offsetHeight;
@@ -87,24 +82,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     let left = rect.left + window.scrollX + rect.width / 2 - popupWidth / 2;
     let top = rect.top + window.scrollY - popupHeight - 10;
 
-    if (left + popupWidth > screenWidth) {
-      left = screenWidth - popupWidth - 10;
-    }
-    if (left < 10) {
-      left = 10;
-    }
-    if (top < 10) {
-      top = rect.bottom + window.scrollY + 10;
-    }
+    if (left + popupWidth > screenWidth) left = screenWidth - popupWidth - 10;
+    if (left < 10) left = 10;
+    if (top < 10) top = rect.bottom + window.scrollY + 10;
 
     popup.style.left = `${left}px`;
     popup.style.top = `${top}px`;
   };
 
-  // Fetch audio and play
   const playAudio = async (text) => {
     try {
-      const response = await fetch('/api/audio', {
+      const response = await fetch('/api/ai/audio', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -114,18 +102,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (!response.ok) throw new Error('Failed to fetch audio');
 
-      const audioBlob = await response.blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
-      audioCache[text] = audioUrl;
+      const { message, url } = await response.json();
 
-      playCachedAudio(audioUrl);
+      console.log('🎧 Audio message:', message);
+      console.log('🎧 Audio URL:', url);
+
+      if (message !== "Returned from cache") {
+        audioCache[text] = url;
+      }
+
+      playCachedAudio(url);
+
     } catch (error) {
-      console.error('Audio playback failed:', error);
+      console.error('🔴 Audio playback failed:', error);
     }
   };
 
-  // Play from cached audio
   const playCachedAudio = (url) => {
+    console.log("🔊 Playing audio from:", url);
+
     let audio = document.getElementById("popup-audio");
     if (!audio) {
       audio = document.createElement("audio");
@@ -133,8 +128,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       audio.hidden = true;
       document.body.appendChild(audio);
     }
+
     audio.src = url;
-    audio.play();
+    audio.load();
+
+    audio.oncanplaythrough = () => {
+      audio.play().catch(err => {
+        console.warn("⚠️ Autoplay blocked by browser:", err);
+      });
+    };
+
+    audio.onerror = (e) => {
+      console.error("❌ Failed to load audio:", e);
+    };
   };
 
   // Handle long-press on words
@@ -143,7 +149,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!target.classList.contains("word")) return;
 
     const word = target.innerText;
-    popupVisible = false;
     timeout = setTimeout(() => fetchWordMeaning(word, target), 800);
   };
 
@@ -157,14 +162,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   storyElement.addEventListener("touchend", cancelTimeout);
   storyElement.addEventListener("touchmove", cancelTimeout);
 
-  // Only hide popup when clicking outside
+  // Hide popup on outside click
   document.addEventListener("click", (event) => {
     if (
       !event.target.classList.contains("word") &&
       !popup.contains(event.target)
     ) {
       popup.style.display = "none";
-      popupVisible = false;
     }
   });
 });
