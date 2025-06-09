@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'Dev'
+      name: 'dev'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write #This is required for requesting the JWT
@@ -69,6 +69,6 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'Toonstack-ai-web-api-dev'
-          slot-name: 'Dev'
+          slot-name: 'dev'
           package: .
           
