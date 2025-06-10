@@ -10,7 +10,7 @@ const containerClient = blobServiceClient.getContainerClient(process.env.AZURE_B
 // Generate SAS URL
 const generateSASUrl = (blobClient) => {
   const expiresOn = new Date();
-  expiresOn.setMinutes(expiresOn.getMinutes() + 60); // SAS URL expires in 1 hour
+  expiresOn.setHours(expiresOn.getHours() + 24); // SAS URL expires in 1 hour
 
   const sasToken = blobClient.generateSasUrl({
     permissions: 'r', // Only read access
