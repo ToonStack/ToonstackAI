@@ -32,5 +32,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 function viewStory(storyId) {
     console.log("Story ID:", storyId);
-    window.location.href = `https://shiny-rotary-phone-j7vgppw77xcw5-3000.app.github.dev/word-meaning?storyId=${storyId}`;
+    window.location.href = `${API_URL}/word-meaning?storyId=${storyId}`;
 }
