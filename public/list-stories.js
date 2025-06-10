@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     container.innerHTML = "<p>Loading stories...</p>";
 
     try {
-        const response = await fetch(`${API_URL}/list-stories`);
+        const response = await fetch(`${API_URL}/api/content/`);
         if (!response.ok) throw new Error("Failed to fetch stories");
         
         const stories = await response.json(); // Assuming API returns an array of story objects
