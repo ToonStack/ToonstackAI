@@ -1,11 +1,12 @@
+const API_URL = "https://toonstack-ai-web-api-dev-adczcmgjeddabpd3.canadacentral-01.azurewebsites.net";
 document.addEventListener("DOMContentLoaded", async () => {
-    const API_URL = "https://shiny-rotary-phone-j7vgppw77xcw5-3000.app.github.dev/api/content"
+    //const API_URL = "https://shiny-rotary-phone-j7vgppw77xcw5-3000.app.github.dev/api/content"
 
     const container = document.getElementById("story-container");
     container.innerHTML = "<p>Loading stories...</p>";
 
     try {
-        const response = await fetch(API_URL);
+        const response = await fetch(`${API_URL}/api/content/`);
         if (!response.ok) throw new Error("Failed to fetch stories");
         
         const stories = await response.json(); // Assuming API returns an array of story objects
@@ -30,5 +31,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 function viewStory(storyId) {
     console.log("Story ID:", storyId);
-    window.location.href = `https://shiny-rotary-phone-j7vgppw77xcw5-3000.app.github.dev/word-meaning?storyId=${storyId}`;
+    window.location.href = `${API_URL}/word-meaning?storyId=${storyId}`;
 }

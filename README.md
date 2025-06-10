@@ -1,14 +1,38 @@
-# GitHub Codespaces ♥️ Express
+# ToonstackAI 
+Toonstack AI is an intelligent API that accepts user queries, enriches them with relevant database content, generates contextual responses using **Azure OpenAI**, and finally transforms the AI-generated response into lifelike speech using **ElevenLabs TTS**.
 
-Welcome to your shiny new Codespace running Express! We've got everything fired up and running for you to explore Express.
+> ⚙️ **Built with Node.js, Express, MongoDB, Azure OpenAI, and ElevenLabs**
 
-You've got a blank canvas to work on from a git perspective as well. There's a single initial commit with the what you're seeing right now - where you go from here is up to you!
+---
 
-Everything you do here is contained within this one codespace. There is no repository on GitHub yet. If and when you’re ready you can click "Publish Branch" and we’ll create your repository and push up your project. If you were just exploring then and have no further need for this code then you can simply delete your codespace and it's gone forever.
+## 📸 **Preview**
 
-To run this application:
+*Add screenshots or usage GIFs here to showcase the flow from chat to TTS.*
 
-```
-npm start
-```
-# ToonstackAI
+---
+
+## 🚀 **Features**
+
+- 💬 **Chat-based AI response** using Azure OpenAI  
+- 🧠 **Context-enhanced queries** with MongoDB integration  
+- 🎙️ **Convert responses to lifelike speech** with ElevenLabs TTS  
+- 🗃️ **Intelligent MongoDB search** for relevant data  
+- 🌐 **Static HTML pages** for word meanings and story lists  
+
+---
+
+## 🧰 **Tech Stack**
+
+| Layer        | Technology                      |
+|--------------|----------------------------------|
+| **Backend**  | Node.js, Express                |
+| **Database** | MongoDB with Mongoose           |
+| **AI Engine**| Azure OpenAI (Chat Completions) |
+| **TTS Engine**| ElevenLabs API (Text-to-Speech)|
+| **UI Pages** | Static HTML served via Express  |
+| **Env Vars** | dotenv                          |
+
+---
+
+## 📂 **Project Structure**
+
