@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "dev": "cross-env NODE_ENV=development node index.js",
-    "staging": "cross-env NODE_ENV=staging node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "staging": "cross-env NODE_ENV=staging nodemonindex.js",
     "start": "cross-env NODE_ENV=production node index.js"
   },
   "type": "module",
