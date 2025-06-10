@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    const API_URL = "https://shiny-rotary-phone-j7vgppw77xcw5-3000.app.github.dev/api/content"
+    //const API_URL = "https://shiny-rotary-phone-j7vgppw77xcw5-3000.app.github.dev/api/content"
+    const API_URL = "https://toonstack-ai-web-api-dev-adczcmgjeddabpd3.canadacentral-01.azurewebsites.net/api/content"
+    
 
     const container = document.getElementById("story-container");
     container.innerHTML = "<p>Loading stories...</p>";
