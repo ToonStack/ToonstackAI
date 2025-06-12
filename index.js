@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from 'dotenv'
-import { connectDB } from "./config/db.js"
+import { connectLyricsDB } from "./config/lyricsDB.js"
 import cors from "cors"
 import path from "path";
 import { fileURLToPath } from "url";
@@ -15,7 +15,7 @@ const app = express()
 dotenv.config()
 const PORT = process.env.PORT || 3000
 
-connectDB()
+connectLyricsDB()
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("audio"));
