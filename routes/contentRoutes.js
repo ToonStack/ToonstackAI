@@ -3,17 +3,23 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import {
-  addContent,
-  getAllContent,
-  searchContent,
-  getContentById
+  getContentByPlaylist,
+  getContentByVideo,
+  getLyricsByVideo,
+  searchContent
 } from '../controllers/contentController.js';
 
 const router = express.Router();
 
-router.post('/add', addContent);
-router.get('/', getAllContent);
+// Get all content by playlist ID
+router.get('/playlist/:playlistId', getContentByPlaylist);
+
+// Get content by video ID
+router.get('/video/:videoId', getContentByVideo);
+
+router.get('/lyrics/:videoId', getLyricsByVideo);
+
+// Search across video titles/descriptions
 router.get('/search', searchContent);
-router.get('/:id', getContentById);
 
 export default router;
