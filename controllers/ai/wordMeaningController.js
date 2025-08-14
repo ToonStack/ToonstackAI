@@ -1,5 +1,6 @@
 import Content from '../../models/Content.js';
-import { queryAzureOpenAI } from '../../config/azureOpenAI.js';
+// import { queryAzureOpenAI } from '../../config/azureOpenAI.js';
+import { queryClaudeAI as queryAzureOpenAI } from '../../config/claudeAI.js';
 import redisClient from '../../config/redisClient.js';
 
 export const getWordMeaning = async (req, res) => {
